@@ -1,6 +1,5 @@
-import { useUpdateTodoMutation } from "@/redux/api/api";
+import { useDeleteTodoMutation, useUpdateTodoMutation } from "@/redux/api/api";
 import { Button } from "../ui/button";
-import { removeTodo } from "@/redux/features/todoSlice";
 
 type TTodoCardProps = {
   _id: string;
@@ -17,7 +16,8 @@ const TodoCard = ({
   isCompleted,
   priority,
 }: TTodoCardProps) => {
-  const [updateToto] = useUpdateTodoMutation();
+  const [updateTodo] = useUpdateTodoMutation();
+  const [deleteTodo] = useDeleteTodoMutation();
 
   const toggleState = () => {
     const taskData = {
@@ -32,7 +32,12 @@ const TodoCard = ({
       data: taskData,
     };
 
-    updateToto(options);
+    updateTodo(options);
+  };
+
+  const handleDelete = () => {
+    deleteTodo(_id);
+    console.log("inside handle =>", _id);
   };
 
   return (
@@ -48,10 +53,10 @@ const TodoCard = ({
       <p className="flex-1 font-semibold">{title}</p>
       <div className="flex-1 flex items-center gap-2">
         <div
-          className={` rounded-full size-3 
-            ${priority === "high" ? "bg-red-500" : null}
-            ${priority === "medium" ? "bg-yellow-500" : null}
-            ${priority === "low" ? "bg-green-500" : null}
+          className={`rounded-full size-3 
+            ${priority === "high" ? "bg-red-500" : ""}
+            ${priority === "medium" ? "bg-yellow-500" : ""}
+            ${priority === "low" ? "bg-green-500" : ""}
           `}
         ></div>
         <p>{priority}</p>
@@ -65,7 +70,7 @@ const TodoCard = ({
       </div>
       <p className="flex-1">{description}</p>
       <div className="space-x-5">
-        <Button onClick={() => dispatch(removeTodo(id))} className="bg-red-500">
+        <Button onClick={handleDelete} className="bg-red-500">
           <svg
             className="size-5"
             fill="none"

@@ -38,12 +38,14 @@ export const baseApi = createApi({
       }),
       invalidatesTags: ["todo"],
     }),
-    removeTodo: builder.mutation({
-      query: (data) => ({
-        url: "/task/:id",
-        method: "DELETE",
-        body: data,
-      }),
+    deleteTodo: builder.mutation({
+      query: (_id) => {
+        console.log("inside api =>", _id);
+        return {
+          url: `/task/${_id}`,
+          method: "DELETE",
+        };
+      },
       invalidatesTags: ["todo"],
     }),
   }),
@@ -53,5 +55,5 @@ export const {
   useGetTodosQuery,
   useAddTodoMutation,
   useUpdateTodoMutation,
-  useRemoveTodoMutation,
+  useDeleteTodoMutation,
 } = baseApi;
