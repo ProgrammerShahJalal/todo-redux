@@ -5,6 +5,7 @@ type TTodo = {
   title: string;
   description: string;
   isCompleted?: boolean;
+  priority: string;
 };
 
 type TInitialState = {
@@ -16,7 +17,9 @@ const initialState: TInitialState = {
 };
 
 const sortTodos = (todos: TTodo[]) => {
-  return todos.sort((a, b) => Number(a.isCompleted) - Number(b.isCompleted));
+  return [...todos].sort(
+    (a, b) => Number(a.isCompleted) - Number(b.isCompleted)
+  );
 };
 
 const todoSlice = createSlice({
@@ -28,28 +31,31 @@ const todoSlice = createSlice({
       state.todos = sortTodos(state.todos);
     },
     removeTodo: (state, action: PayloadAction<string>) => {
-      state.todos = state.todos.filter((todo) => todo.id !== action.payload);
-      state.todos = sortTodos(state.todos);
+      state.todos = sortTodos(
+        state.todos.filter((todo) => todo.id !== action.payload)
+      );
     },
     toggleTodo: (state, action: PayloadAction<string>) => {
-      state.todos = state.todos.map((todo) =>
-        todo.id === action.payload
-          ? { ...todo, isCompleted: !todo.isCompleted }
-          : todo
+      state.todos = sortTodos(
+        state.todos.map((todo) =>
+          todo.id === action.payload
+            ? { ...todo, isCompleted: !todo.isCompleted }
+            : todo
+        )
       );
-      state.todos = sortTodos(state.todos);
     },
     updateTodo: (state, action: PayloadAction<TTodo>) => {
-      state.todos = state.todos.map((todo) =>
-        todo.id === action.payload.id
-          ? {
-              ...todo,
-              title: action.payload.title,
-              description: action.payload.description,
-            }
-          : todo
+      state.todos = sortTodos(
+        state.todos.map((todo) =>
+          todo.id === action.payload.id
+            ? {
+                ...todo,
+                title: action.payload.title,
+                description: action.payload.description,
+              }
+            : todo
+        )
       );
-      state.todos = sortTodos(state.todos);
     },
   },
 });

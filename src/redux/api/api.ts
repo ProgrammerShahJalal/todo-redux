@@ -40,7 +40,6 @@ export const baseApi = createApi({
     }),
     deleteTodo: builder.mutation({
       query: (_id) => {
-        console.log("inside api =>", _id);
         return {
           url: `/task/${_id}`,
           method: "DELETE",

@@ -1,5 +1,7 @@
 import { useDeleteTodoMutation, useUpdateTodoMutation } from "@/redux/api/api";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import UpdateTodoModal from "./UpdateTodoModal";
 
 type TTodoCardProps = {
   _id: string;
@@ -18,6 +20,7 @@ const TodoCard = ({
 }: TTodoCardProps) => {
   const [updateTodo] = useUpdateTodoMutation();
   const [deleteTodo] = useDeleteTodoMutation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleState = () => {
     const taskData = {
@@ -37,7 +40,16 @@ const TodoCard = ({
 
   const handleDelete = () => {
     deleteTodo(_id);
-    console.log("inside handle =>", _id);
+  };
+
+  const handleUpdate = (updatedTodo: TTodoCardProps) => {
+    const options = {
+      id: _id,
+      data: updatedTodo,
+    };
+
+    updateTodo(options);
+    setIsModalOpen(false);
   };
 
   return (
@@ -48,7 +60,7 @@ const TodoCard = ({
         type="checkbox"
         name="complete"
         id="complete"
-        defaultChecked={isCompleted}
+        checked={isCompleted}
       />
       <p className="flex-1 font-semibold">{title}</p>
       <div className="flex-1 flex items-center gap-2">
@@ -86,7 +98,7 @@ const TodoCard = ({
             ></path>
           </svg>
         </Button>
-        <Button className="bg-[#5C53FE]">
+        <Button onClick={() => setIsModalOpen(true)} className="bg-[#5C53FE]">
           <svg
             className="size-5"
             fill="none"
@@ -103,6 +115,13 @@ const TodoCard = ({
           </svg>
         </Button>
       </div>
+      {isModalOpen && (
+        <UpdateTodoModal
+          todo={{ _id, title, description, isCompleted, priority }}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleUpdate}
+        />
+      )}
     </div>
   );
 };
